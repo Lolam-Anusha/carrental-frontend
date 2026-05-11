@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities; */
 
+@theme {
+  --color-orange: #ff4d30;
+}
+
+
 .hamburger {
     cursor: pointer;
     width: 24px;
