@@ -39,9 +39,9 @@ export default function CarCard({ image, name, model, rent }) {
 
                     {/* Car Features */}
                     <div className="flex justify-between text-sm text-[#777] font-sans">
-                        <span>⚙️ Manual</span>
-                        <span>👤 4 Seats</span>
-                        <span>❄️ AC</span>
+                        <span>&#9881; Manual</span>
+                        <span>&#128100; 4 Seats</span>
+                        <span>&#10052; AC</span>
                     </div>
 
                 </div>
