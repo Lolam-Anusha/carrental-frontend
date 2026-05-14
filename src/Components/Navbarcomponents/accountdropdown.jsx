@@ -30,17 +30,21 @@ export default function Dropdown() {
 
     return (
         <div className="relative inline-block text-left" ref={dropdownRef}>
-            <p onClick={toggleDropdown} className="inline-flex rounded-full justify-center w-7 h-7 mt-2 cursor-pointer">
+            <p onClick={toggleDropdown}
+                className="inline-flex rounded-full justify-center w-7 h-7 mt-2 cursor-pointer">
                 <AccountCircleOutlinedIcon className="hover:text-orange" />
             </p>
 
             {isOpen && (
-                <div className="origin-top absolute left-1/2 transform -translate-x-1/2 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <div className="py-1 text-center">
-                        <Link to="/account/bookings" className="block px-4 py-2 text-base font-semibold text-gray-700 hover:bg-cyan-200">
+                        <Link to="/account/bookings"
+                            onClick={() => setIsOpen(false)}
+                            className="block px-4 py-2 text-base font-semibold text-gray-700 hover:bg-gray-100">
                             Bookings
                         </Link>
-                        <p onClick={handleLogout} className="block px-4 py-2 text-base font-semibold text-gray-700 hover:bg-cyan-200 cursor-pointer">
+                        <p onClick={handleLogout}
+                            className="block px-4 py-2 text-base font-semibold text-gray-700 hover:bg-gray-100 cursor-pointer">
                             Logout
                         </p>
                     </div>
