@@ -28,7 +28,7 @@ export default function CarCard({ image, name, model, rent }) {
                     {/* Car Name and Rent */}
                     <div className="flex justify-between items-center mb-2">
                         <h2 className="font-bold text-lg font-sans">{name}</h2>
-                        <span className="text-orange font-bold text-lg">{rent}<span className="text-sm text-[#777]">/day</span></span>
+                        <span className="text-orange font-bold text-lg">{rent}<span className="text-sm text-[#777]">/hour</span></span>
                     </div>
 
                     {/* Car Model */}
