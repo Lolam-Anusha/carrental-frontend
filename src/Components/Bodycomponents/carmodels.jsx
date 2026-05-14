@@ -14,37 +14,37 @@ export default function Carmodel(){
         {
             name: "Audi A1",
             model: "Audi",
-            rent: "₹3,500",
+            rent: "&#8377;3,500",
             image: audi
         },
         {
             name: "Golf 6",
             model: "VW",
-            rent: "₹2,800",
+            rent: "&#8377;1500",
             image: golf
         },
         {
             name: "Toyota",
             model: "Camry",
-            rent: "₹2,500",
+            rent: "&#8377;2,500",
             image: toyota
         },
         {
             name: "BMW 320",
             model: "ModernLine",
-            rent: "₹3,200",
+            rent: "&#8377;3,200",
             image: bmw
         },
         {
             name: "Mercedes",
             model: "Benz GLK",
-            rent: "₹4,500",
+            rent: "&#8377;4,500",
             image: benz
         },
         {
             name: "NW Passat",
             model: "CC",
-            rent: "₹2,200",
+            rent: "&#8377;2,200",
             image: passat
         }
     ]
