@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../images/carlogo.png";
@@ -30,42 +29,54 @@ export default function Accountbar() {
     }, [setUser, navigate]);
 
     return (
-        <nav className="relative container mx-auto p-6 bg-transparent">
+        <nav className="relative container mx-auto p-6 bg-white">
             <div className="flex items-center justify-between">
+
+                {/* Logo */}
                 <div className="pt-2">
                     <img className="w-40 h-12 cursor-pointer" src={logo} alt="Logo" />
                 </div>
 
+                {/* Desktop Menu */}
                 <div className="hidden md:flex space-x-6">
                     {menus.filter(menu => menu.name !== "Bookings").map((menu, index) => (
-                        <Link key={index} to={menu.href} className="font-bold text-lg font-sans hover:text-orange">
+                        <Link key={index} to={menu.href}
+                            className="font-bold text-lg font-sans hover:text-orange">
                             {menu.name}
                         </Link>
                     ))}
                 </div>
 
+                {/* Dropdown Desktop */}
                 <div className="hidden md:flex space-x-4">
                     <Dropdown />
                 </div>
 
-                <div className="md:hidden flex justify-end w-full">
-                    <button onClick={open} className={`hamburger ${isToggle ? 'open' : ''}`}>
+                {/* Hamburger Mobile */}
+                <div className="md:hidden">
+                    <button onClick={open}
+                        className={`hamburger ${isToggle ? 'open' : ''}`}>
                         <span className="hamburger-top"></span>
                         <span className="hamburger-middle"></span>
                         <span className="hamburger-bottom"></span>
                     </button>
                 </div>
-                
             </div>
 
+            {/* Mobile Menu */}
             {isToggle && (
-                <div className="md:hidden absolute flex flex-col items-center self-end py-8 mt-10 space-y-6 font-bold bg-white sm:w-auto sm:self-center left-6 right-6 drop-shadow-md z-50">
+                <div className="md:hidden flex flex-col bg-white w-full shadow-lg z-50 mt-4 rounded-lg py-4">
                     {menus.map((menu, index) => (
-                        <Link key={index} to={menu.href} onClick={() => setIstoggle(false)}>
+                        <Link key={index} to={menu.href}
+                            onClick={() => setIstoggle(false)}
+                            className="font-bold text-lg font-sans px-6 py-3 hover:text-orange hover:bg-gray-100 border-b border-gray-100">
                             {menu.name}
                         </Link>
                     ))}
-                    <p onClick={handleLogout} className="cursor-pointer hover:text-orange">Logout</p>
+                    <button onClick={handleLogout}
+                        className="font-bold text-lg font-sans px-6 py-3 mx-4 my-2 rounded text-white bg-orange text-center">
+                        Logout
+                    </button>
                 </div>
             )}
         </nav>
