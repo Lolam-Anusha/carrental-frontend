@@ -14,7 +14,7 @@ import { UserContext } from '../../Context/Clientcontext';
 
 export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlace, dropPlace, pickDate, dropDate }) {
 
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [pickTime, setPickTime] = useState('');
     const [dropTime, setDropTime] = useState('');
     const [selectedImage, setSelectedimage] = useState();
@@ -27,10 +27,7 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
     const [city, setCity] = useState('');
     const [zipcode, setZipcode] = useState('');
     const [showWarning, setShowwarning] = useState(false);
-
-    // NEW STATE for conflict message
-    const [conflictMessage, setConflictMessage] = useState('');
-
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const isReserveDesable = !pickTime || !dropTime || !firstname ||
@@ -58,22 +55,21 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
 
     const ReserveCar = async () => {
 
-        // Check if all fields filled
         if (isReserveDesable) {
             setShowwarning(true);
             setTimeout(() => {
                 setShowwarning(false);
             }, 1500);
-            return; // stop here dont continue
+            return;
         }
 
-        // Check if user is logged in
         if (!user) {
             navigate('/login');
             return;
         }
 
         try {
+            setIsLoading(true);
             const { data } = await axios.post('/api/reservation', {
                 carType,
                 pickPlace,
@@ -92,20 +88,17 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
                 zipcode
             });
 
-            // If backend returns conflict
-            if (data?.conflict) {
-                setConflictMessage(data.message);
-                setTimeout(() => {
-                    setConflictMessage('');
-                }, 4000);
-                return; // stop here dont navigate
-            }
-
-            // Success navigate to bookings
             navigate('/account/bookings');
 
         } catch (e) {
-            console.log(e);
+            // Handle conflict 409
+            if (e.response?.status === 409) {
+                alert(e.response.data.message);
+            } else {
+                console.log('Reservation error:', e);
+            }
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -127,11 +120,12 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
                             Upon completing this reservation enquiry, you will receive:
                         </h2>
                         <p className="font-bold font-sans text-base py-2 text-[#777]">
-                            Your rental voucher to produce on arrival at the rental desk and a toll-free customer support number.
+                            Your rental voucher to produce on arrival at the rental desk
+                            and a toll-free customer support number.
                         </p>
                     </div>
 
-                    {/* Location and car */}
+                    {/* Location and Date */}
                     <div className="grid lg:grid-cols-2 w-full border-b">
                         <div className="justify-start py-4 px-4 w-full bg-white">
                             <h2 className="text-orange font-bold font-sans text-xl">Location & Date</h2>
@@ -166,6 +160,8 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
                             </h3>
                             <p className="text-base px-2 text-[#777] font-sans">{dropPlace}</p>
                         </div>
+
+                        {/* Car Image */}
                         <div className="justify-center py-4 px-4 w-full bg-white">
                             <h2 className="font-bold font-sans text-lg">
                                 Car - <span className="text-orange font-bold font-sans text-lg">{carType}</span>
@@ -174,63 +170,97 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
                         </div>
                     </div>
 
-                    {/* Personal info */}
+                    {/* Personal Information */}
                     <h2 className="text-orange py-4 font-bold font-sans text-xl">Personal Information</h2>
                     <div className="grid lg:grid-cols-2 w-full bg-white">
                         <div className="py-2 px-4">
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">First Name</label><br />
-                            <input value={firstname} onChange={ev => setFirstname(ev.target.value)} type="text"
+                            <input
+                                value={firstname}
+                                onChange={ev => setFirstname(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='First Name' />
+                                placeholder='First Name'
+                            />
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Last Name</label><br />
-                            <input value={lastname} onChange={ev => setLastName(ev.target.value)} type="text"
+                            <input
+                                value={lastname}
+                                onChange={ev => setLastName(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Last Name' />
+                                placeholder='Last Name'
+                            />
                         </div>
                         <div className="py-2 px-4">
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Phone Number</label><br />
-                            <input value={phone} onChange={ev => setPhone(ev.target.value)} type="text"
+                            <input
+                                value={phone}
+                                onChange={ev => setPhone(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Phone no' />
+                                placeholder='Phone no'
+                            />
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Age</label><br />
-                            <input value={age} onChange={ev => setAge(ev.target.value)} type="text"
+                            <input
+                                value={age}
+                                onChange={ev => setAge(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Age' />
+                                placeholder='Age'
+                            />
                         </div>
                     </div>
 
                     <div className="grid grid-rows-2 w-full">
                         <div className="px-4">
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Email</label><br />
-                            <input value={email} onChange={ev => setEmail(ev.target.value)} type="text"
+                            <input
+                                value={email}
+                                onChange={ev => setEmail(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Email' />
+                                placeholder='Email'
+                            />
                         </div>
                         <div className="px-4">
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Address</label><br />
-                            <input value={address} onChange={ev => setAddress(ev.target.value)} type="text"
+                            <input
+                                value={address}
+                                onChange={ev => setAddress(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Address' />
+                                placeholder='Address'
+                            />
                         </div>
                     </div>
 
                     <div className="grid lg:grid-cols-2 w-full border-b">
                         <div className='px-4'>
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">City</label><br />
-                            <input value={city} onChange={ev => setCity(ev.target.value)} type="text"
+                            <input
+                                value={city}
+                                onChange={ev => setCity(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='City' />
+                                placeholder='City'
+                            />
                         </div>
                         <div className='px-4'>
                             <label className="text-lg text-[#777] mx-2 font-semibold font-sans">Zip Code</label><br />
-                            <input value={zipcode} onChange={ev => setZipcode(ev.target.value)} type="text"
+                            <input
+                                value={zipcode}
+                                onChange={ev => setZipcode(ev.target.value)}
+                                type="text"
                                 className="focus:outline-none my-2 px-2 w-full py-3 text-[#777] bg-[#dbdbdb]"
-                                placeholder='Zip Code' />
+                                placeholder='Zip Code'
+                            />
                         </div>
                     </div>
 
+                    {/* Checkbox */}
                     <div className="px-4 py-4 w-full">
-                        <input type="checkbox" /><label className="text-lg px-2 text-[#777] font-sans font-semibold">
+                        <input type="checkbox" />
+                        <label className="text-lg px-2 text-[#777] font-sans font-semibold">
                             Please send me latest news and updates
                         </label>
                     </div>
@@ -242,19 +272,13 @@ export default function Bookcar({ isDivVisible, setDivVisible, carType, pickPlac
                         </div>
                     )}
 
-                    {/* Conflict warning — NEW */}
-                    {conflictMessage && (
-                        <div className="px-4 py-2 bg-red-100 w-full flex justify-center">
-                            <h2 className="text-red-600 font-semibold text-center">{conflictMessage}</h2>
-                        </div>
-                    )}
-
-                    {/* Reserve button */}
+                    {/* Reserve Button */}
                     <div className="px-4 py-8 bg-[#dbdbdb] w-full flex justify-center">
                         <button
                             onClick={ReserveCar}
-                            className="bg-orange px-6 py-3 text-white font-sans font-semibold rounded">
-                            Reserve now
+                            disabled={isLoading}
+                            className="bg-orange px-6 py-3 text-white font-sans font-semibold rounded disabled:opacity-50">
+                            {isLoading ? 'Reserving...' : 'Reserve now'}
                         </button>
                     </div>
 
